@@ -305,10 +305,10 @@
       <text x="120" y="170" class="text-tag">sys_on</text>
       <text x="120" y="182" class="text-addr">(M0.0)</text>
 
-                        <!-- ================= NETWORK 2 ================= -->
+                              <!-- ================= NETWORK 2 ================= -->
       <text x="60" y="260" class="text-title">Network 2: Автозапуск откачки (rune) — защита от сухого хода</text>
 
-      <!-- Подписи контактов -->
+      <!-- Подписи: центр контакта +20 -->
       <text x="120" y="305" class="text-tag">hight</text>
       <text x="120" y="320" class="text-addr">(I0.4)</text>
 
@@ -321,7 +321,7 @@
       <text x="670" y="305" class="text-tag">rune</text>
       <text x="670" y="320" class="text-addr">(M0.1)</text>
 
-      <!-- Основная цепь: hight И sys_on -> стык -> НЗ low -> катушка rune -->
+      <!-- Основная цепь: hight(HO) И sys_on(HO) -> стык x=420 -> НЗ low -> катушка rune -->
       <line x1="50" y1="340" x2="100" y2="340" class="rung" />
       <use href="#no-contact" x="100" y="340" />
       <line x1="140" y1="340" x2="260" y2="340" class="rung" />
@@ -333,7 +333,7 @@
       <use href="#coil" x="650" y="340" />
       <line x1="690" y1="340" x2="750" y2="340" class="rung" />
 
-      <!-- Ветка самоподхвата rune (НО): замыкается в стык x=420, ДО НЗ low -->
+      <!-- Ветка самоподхвата rune (HO): из стыка x=420, ДО НЗ low -->
       <line x1="420" y1="340" x2="420" y2="440" class="rung" />
       <line x1="420" y1="440" x2="440" y2="440" class="rung" />
       <use href="#no-contact" x="440" y="440" />
@@ -343,7 +343,6 @@
       <text x="460" y="420" class="text-tag">rune</text>
       <text x="460" y="432" class="text-addr">(M0.1)</text>
 
-      <!-- Пояснение -->
       <text x="60" y="470" class="text-addr" style="font-style: italic">
         НЗ low (I0.3) разрывает цепь при опустошении бака — насос встаёт, сухого хода нет.
       </text>
