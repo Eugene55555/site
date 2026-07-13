@@ -305,51 +305,47 @@
       <text x="120" y="170" class="text-tag">sys_on</text>
       <text x="120" y="182" class="text-addr">(M0.0)</text>
 
-            <!-- ================= NETWORK 2 ================= -->
-      <text x="60" y="260" class="text-title">
-        Network 2: Автозапуск откачки (rune) — защита от сухого хода
-      </text>
+                  <!-- ================= NETWORK 2 ================= -->
+      <text x="60" y="260" class="text-title">Network 2: Pump run request (rune) with dry-run protection</text>
 
-      <!-- Тексты над контактами -->
-      <text x="120" y="305" class="text-tag">hight</text>
-      <text x="120" y="320" class="text-addr">(I0.4)</text>
+      <!-- Contacts labels -->
+      <text x="120" y="305" class="text-tag">sys_on</text>
+      <text x="120" y="320" class="text-addr">(M0.0)</text>
 
-      <text x="280" y="305" class="text-tag">low</text>
-      <text x="280" y="320" class="text-addr">(I0.3)</text>
+      <text x="280" y="305" class="text-tag">hight</text>
+      <text x="280" y="320" class="text-addr">(I0.4)</text>
 
-      <text x="440" y="305" class="text-tag">sys_on</text>
-      <text x="440" y="320" class="text-addr">(M0.0)</text>
+      <text x="480" y="305" class="text-tag">low</text>
+      <text x="480" y="320" class="text-addr">(I0.3) NC</text>
 
       <text x="670" y="305" class="text-tag">rune</text>
       <text x="670" y="320" class="text-addr">(M0.1)</text>
 
-      <!-- Основная линия: hight И low И sys_on -> НЗ low -> катушка -->
+      <!-- Main rung: sys_on AND hight -> junction -> NC low -> coil -->
       <line x1="50" y1="340" x2="100" y2="340" class="rung" />
       <use href="#no-contact" x="100" y="340" />
       <line x1="140" y1="340" x2="260" y2="340" class="rung" />
       <use href="#no-contact" x="260" y="340" />
       <line x1="300" y1="340" x2="420" y2="340" class="rung" />
-      <use href="#no-contact" x="420" y="340" />
-      <line x1="460" y1="340" x2="560" y2="340" class="rung" />
-      <!-- НЗ контакт low (I0.3): сброс при падении уровня ниже низа -->
+      <line x1="420" y1="340" x2="560" y2="340" class="rung" />
       <use href="#nc-contact" x="560" y="340" />
       <line x1="600" y1="340" x2="650" y2="340" class="rung" />
       <use href="#coil" x="650" y="340" />
       <line x1="690" y1="340" x2="750" y2="340" class="rung" />
 
-      <!-- Параллельная ветка: самоподхват rune (НО) -->
-      <line x1="80" y1="340" x2="80" y2="390" class="rung" />
-      <line x1="80" y1="390" x2="100" y2="390" class="rung" />
-      <use href="#no-contact" x="100" y="390" />
-      <line x1="140" y1="390" x2="160" y2="390" class="rung" />
-      <line x1="160" y1="390" x2="160" y2="340" class="rung" />
-      <text x="120" y="370" class="text-tag">rune</text>
-      <text x="120" y="382" class="text-addr">(M0.1)</text>
+      <!-- Self-holding branch rune (NO): connects at x=420, returns to main rung BEFORE NC low -->
+      <line x1="420" y1="340" x2="420" y2="440" class="rung" />
+      <line x1="420" y1="440" x2="440" y2="440" class="rung" />
+      <use href="#no-contact" x="440" y="440" />
+      <line x1="480" y1="440" x2="500" y2="440" class="rung" />
+      <line x1="500" y1="440" x2="500" y2="340" class="rung" />
+      <line x1="500" y1="340" x2="560" y2="340" class="rung" />
+      <text x="460" y="420" class="text-tag">rune</text>
+      <text x="460" y="432" class="text-addr">(M0.1)</text>
 
-      <!-- Пояснение: защита от сухого хода -->
+      <!-- Note: NC low (I0.3) breaks BOTH start and self-hold -> no dry run -->
       <text x="60" y="470" class="text-addr" style="font-style: italic">
-        Сброс rune по НЕ low (I0.3, НЗ): насос останавливается, когда уровень
-        падает ниже нижнего датчика. Самоподхват удерживает только пока low замкнут.
+        Dry-run protection: rune resets when low opens (I0.3, NC).
       </text>
 <!-- ================= NETWORK 3 ================= -->
       <text x="60" y="520" class="text-title">Network 3</text>
