@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Паспорт системы автоматизации бункера S7-1200</title>
+    <style>
+      :root {
+        --siemens-teal: #008080;
+        --siemens-dark: #0f172a;
+        --border-color: #cbd5e0;
+        --grid-color: rgba(0, 128, 128, 0.05);
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 10mm 15mm 15mm 15mm;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #f8fafc;
+        color: #1e293b;
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* Инженерная сетка на фоне (отображается при печати фоновых рисунков) */
+      .page-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        background-image:
+          linear-gradient(var(--grid-color) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+        background-size: 20px 20px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
+      }
+
+      .header-block {
+        border: 2px solid #000000;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 25px;
+        background-color: #f1f5f9;
+      }
+
+      .header-block h1 {
+        margin: 0;
+        font-size: 1.6rem;
+        color: #000000;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .header-block p {
+        margin: 5px 0 0 0;
+        font-size: 0.95rem;
+        font-weight: bold;
+        color: var(--siemens-dark);
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 5px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        color: #000000;
+        font-weight: bold;
+      }
+
+      /* Таблица тегов */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        font-size: 0.85rem;
+      }
+
+      th,
+      td {
+        border: 1px solid #000000;
+        padding: 6px 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #e2e8f0;
+        font-weight: bold;
+      }
+
+      .tag-addr {
+        font-family: monospace;
+        font-weight: bold;
+        background-color: #f1f5f9;
+        padding: 2px 5px;
+      }
+
+      /* Оформление схем LAD */
+      .network-card {
+        border: 1px solid #000000;
+        margin-bottom: 25px;
+        background-color: #ffffff;
+        page-break-inside: avoid; /* Предотвращает разрыв схемы при печати в PDF */
+      }
+
+      .network-header {
+        background-color: #e2e8f0;
+        border-bottom: 1px solid #000000;
+        padding: 5px 10px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .ladder-graphic {
+        white-space: pre;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        line-height: 1.25;
+        letter-spacing: 0px;
+        color: #000000;
+        padding: 15px;
+        overflow-x: auto;
+        background-color: #fafbfc;
+      }
+
+      /* ГОСТ Штамп чертежа внизу страницы */
+      .gost-stamp {
+        margin-top: 50px;
+        border: 2px solid #000000;
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.8rem;
+        background-color: #ffffff;
+        page-break-inside: avoid;
+      }
+
+      .gost-stamp td {
+        border: 1px solid #000000;
+        padding: 4px 8px;
+      }
+
+      @media print {
+        body {
+          background-color: #ffffff;
+        }
+        .page-container {
+          border: none;
+          box-shadow: none;
+          padding: 0;
+          max-width: 100%;
+        }
+        .network-card {
+          page-break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 800 1350"
+      width="100%"
+      height="1350"
+      style="
+        background-color: #ffffff;
+        font-family: &quot;Segoe UI&quot;, Arial, sans-serif;
+      "
+    >
+      <!-- Обозначение стилей -->
+      <style>
+        .rail {
+          stroke: #008080;
+          stroke-width: 3;
+        }
+        .rung {
+          stroke: #0f172a;
+          stroke-width: 2;
+          fill: none;
+        }
+        .contact-line {
+          stroke: #0f172a;
+          stroke-width: 2;
+        }
+        .text-title {
+          fill: #008080;
+          font-weight: bold;
+          font-size: 13px;
+        }
+        .text-tag {
+          fill: #0f172a;
+          font-weight: bold;
+          font-size: 11px;
+          text-anchor: middle;
+        }
+        .text-addr {
+          fill: #475569;
+          font-size: 11px;
+          text-anchor: middle;
+          font-family: monospace;
+        }
+        .border-box {
+          stroke: #000000;
+          stroke-width: 2;
+          fill: none;
+        }
+        .grid-line {
+          stroke: #e2e8f0;
+          stroke-width: 0.5;
+          stroke-dasharray: 4, 4;
+        }
+      </style>
+
+      <!-- Инженерная сетка на заднем фоне -->
+      <g>
+        <line x1="50" y1="0" x2="50" y2="1350" class="grid-line" />
+        <line x1="750" y1="0" x2="750" y2="1350" class="grid-line" />
+        <!-- Горизонтальные линии сетки для выравнивания -->
+        <line x1="0" y1="140" x2="800" y2="140" class="grid-line" />
+        <line x1="0" y1="340" x2="800" y2="340" class="grid-line" />
+        <line x1="0" y1="590" x2="800" y2="590" class="grid-line" />
+        <line x1="0" y1="780" x2="800" y2="780" class="grid-line" />
+        <line x1="0" y1="930" x2="800" y2="930" class="grid-line" />
+        <line x1="0" y1="1080" x2="800" y2="1080" class="grid-line" />
+      </g>
+
+      <!-- Встроенные шаблоны компонентов (Контакты и Катушки) -->
+      <defs>
+        <!-- Нормально-открытый контакт NO -->
+        <g id="no-contact">
+          <line x1="0" y1="0" x2="15" y2="0" class="contact-line" />
+          <line x1="15" y1="-12" x2="15" y2="12" class="contact-line" />
+          <line x1="25" y1="-12" x2="25" y2="12" class="contact-line" />
+          <line x1="25" y1="0" x2="40" y2="0" class="contact-line" />
+        </g>
+        <!-- Нормально-закрытый контакт NC -->
+        <g id="nc-contact">
+          <line x1="0" y1="0" x2="15" y2="0" class="contact-line" />
+          <line x1="15" y1="-12" x2="15" y2="12" class="contact-line" />
+          <line x1="25" y1="-12" x2="25" y2="12" class="contact-line" />
+          <line x1="12" y1="10" x2="28" y2="-10" class="contact-line" />
+          <line x1="25" y1="0" x2="40" y2="0" class="contact-line" />
+        </g>
+        <!-- Выходная катушка Coil -->
+        <g id="coil">
+          <line x1="0" y1="0" x2="15" y2="0" class="contact-line" />
+          <path
+            d="M 15,-12 A 12,12 0 0,0 15,12"
+            fill="none"
+            class="contact-line"
+          />
+          <path
+            d="M 25,-12 A 12,12 0 0,1 25,12"
+            fill="none"
+            class="contact-line"
+          />
+          <line x1="25" y1="0" x2="40" y2="0" class="contact-line" />
+        </g>
+      </defs>
+
+      <!-- Силовые шины питания (Левая и Правая шина ПЛК) -->
+      <line x1="50" y1="50" x2="50" y2="1150" class="rail" />
+      <line x1="750" y1="50" x2="750" y2="1150" class="rail" />
+
+      <!-- ================= NETWORK 1 ================= -->
+      <text x="60" y="70" class="text-title">
+        Network 1: Включение системы по кнопке СТАРТ (Самоподхват)
+      </text>
+
+      <!-- Тексты над контактами (Выравнивание строго по центру контакта) -->
+      <text x="120" y="105" class="text-tag">DI_Start</text>
+      <text x="120" y="120" class="text-addr">(I0.0)</text>
+
+      <text x="280" y="105" class="text-tag">DI_Stop</text>
+      <text x="280" y="120" class="text-addr">(I0.1)</text>
+
+      <text x="440" y="105" class="text-tag">DI_ESTOP</text>
+      <text x="440" y="120" class="text-addr">(I0.2)</text>
+
+      <text x="670" y="105" class="text-tag">System_On</text>
+      <text x="670" y="120" class="text-addr">(M0.0)</text>
+
+      <!-- Основная линия Network 1 -->
+      <line x1="50" y1="140" x2="100" y2="140" class="rung" />
+      <use href="#no-contact" x="100" y="140" />
+      <line x1="140" y1="140" x2="260" y2="140" class="rung" />
+      <use href="#no-contact" x="260" y="140" />
+      <line x1="300" y1="140" x2="420" y2="140" class="rung" />
+      <use href="#no-contact" x="420" y="140" />
+      <line x1="460" y1="140" x2="650" y2="140" class="rung" />
+      <use href="#coil" x="650" y="140" />
+      <line x1="690" y1="140" x2="750" y2="140" class="rung" />
+
+      <!-- Параллельная ветка System_On (Самоподхват) -->
+      <line x1="80" y1="140" x2="80" y2="190" class="rung" />
+      <line x1="80" y1="190" x2="100" y2="190" class="rung" />
+      <use href="#no-contact" x="100" y="190" />
+      <line x1="140" y1="190" x2="160" y2="190" class="rung" />
+      <line x1="160" y1="190" x2="160" y2="140" class="rung" />
+      <!-- Текст НАД параллельным контактом самоподхвата -->
+      <text x="120" y="170" class="text-tag">System_On</text>
+      <text x="120" y="182" class="text-addr">(M0.0)</text>
+
+      <!-- ================= NETWORK 2 ================= -->
+      <text x="60" y="260" class="text-title">
+        Network 2: Автоматический запрос на пуск откачки (Pump_Run_Request)
+      </text>
+
+      <!-- Тексты над контактами -->
+      <text x="120" y="305" class="text-tag">DI_Level_High</text>
+      <text x="120" y="320" class="text-addr">(I0.4)</text>
+
+      <text x="280" y="305" class="text-tag">DI_Level_Low</text>
+      <text x="280" y="320" class="text-addr">(I0.3)</text>
+
+      <text x="440" y="305" class="text-tag">System_On</text>
+      <text x="440" y="320" class="text-addr">(M0.0)</text>
+
+      <text x="670" y="305" class="text-tag">Pump_Run_Request</text>
+      <text x="670" y="320" class="text-addr">(M0.1)</text>
+
+      <!-- Основная линия Network 2 -->
+      <line x1="50" y1="340" x2="100" y2="340" class="rung" />
+      <use href="#no-contact" x="100" y="340" />
+      <line x1="140" y1="340" x2="260" y2="340" class="rung" />
+      <use href="#no-contact" x="260" y="340" />
+      <line x1="300" y1="340" x2="420" y2="340" class="rung" />
+      <use href="#no-contact" x="420" y="340" />
+      <line x1="460" y1="340" x2="650" y2="340" class="rung" />
+      <use href="#coil" x="650" y="340" />
+      <line x1="690" y1="340" x2="750" y2="340" class="rung" />
+
+      <!-- Параллельная ветка 1: Датчик эмульгатора DI_Emuls_High -->
+      <line x1="80" y1="340" x2="80" y2="390" class="rung" />
+      <line x1="80" y1="390" x2="100" y2="390" class="rung" />
+      <use href="#no-contact" x="100" y="390" />
+      <line x1="140" y1="390" x2="160" y2="390" class="rung" />
+      <line x1="160" y1="390" x2="160" y2="340" class="rung" />
+      <text x="120" y="370" class="text-tag">DI_Emuls_High</text>
+      <text x="120" y="382" class="text-addr">(I0.5)</text>
+
+      <!-- Параллельная ветка 2: Самоподхват Pump_Run_Request -->
+      <line x1="80" y1="390" x2="80" y2="440" class="rung" />
+      <line x1="80" y1="440" x2="100" y2="440" class="rung" />
+      <use href="#no-contact" x="100" y="440" />
+      <line x1="140" y1="440" x2="160" y2="440" class="rung" />
+      <line x1="160" y1="440" x2="160" y2="340" class="rung" />
+      <text x="120" y="420" class="text-tag">Pump_Run_Req</text>
+      <text x="120" y="432" class="text-addr">(M0.1)</text>
+
+      <!-- ================= NETWORK 3 ================= -->
+      <text x="60" y="520" class="text-title">
+        Network 3: Силовой контактор питания двигателя насоса (DO_K1)
+      </text>
+
+      <!-- Тексты над контактами -->
+      <text x="120" y="555" class="text-tag">Pump_Run_Req</text>
+      <text x="120" y="570" class="text-addr">(M0.1)</text>
+
+      <text x="280" y="555" class="text-tag">System_On</text>
+      <text x="280" y="570" class="text-addr">(M0.0)</text>
+
+      <text x="670" y="555" class="text-tag">DO_K1</text>
+      <text x="670" y="570" class="text-addr">(Q0.0)</text>
+
+      <!-- Основная линия Network 3 -->
+      <line x1="50" y1="590" x2="100" y2="590" class="rung" />
+      <use href="#no-contact" x="100" y="590" />
+      <line x1="140" y1="590" x2="260" y2="590" class="rung" />
+      <use href="#no-contact" x="260" y="590" />
+      <line x1="300" y1="590" x2="650" y2="590" class="rung" />
+      <use href="#coil" x="650" y="590" />
+      <line x1="690" y1="590" x2="750" y2="590" class="rung" />
+
+      <!-- Параллельная ветка: Блокировка отключения контактора К1 до полного останова системы -->
+      <line x1="80" y1="590" x2="80" y2="640" class="rung" />
+      <line x1="80" y1="640" x2="100" y2="640" class="rung" />
+      <use href="#no-contact" x="100" y="640" />
+      <line x1="140" y1="640" x2="160" y2="640" class="rung" />
+      <line x1="160" y1="640" x2="160" y2="590" class="rung" />
+      <text x="120" y="620" class="text-tag">DO_K1</text>
+      <text x="120" y="632" class="text-addr">(Q0.0)</text>
+
+      <!-- ================= NETWORK 4 ================= -->
+      <text x="60" y="700" class="text-title">
+        Network 4: Таймер TON (Задержка подачи сигнала запуска на частотник ПЧ
+        V20)
+      </text>
+
+      <!-- Тексты над контактами -->
+      <text x="120" y="745" class="text-tag">DO_K1</text>
+      <text x="120" y="760" class="text-addr">(Q0.0)</text>
+
+      <text x="240" y="745" class="text-tag">Pump_Run_Req</text>
+      <text x="240" y="760" class="text-addr">(M0.1)</text>
+
+      <text x="670" y="745" class="text-tag">DO_VFD_Run</text>
+      <text x="670" y="760" class="text-addr">(Q0.1)</text>
+
+      <text
+        x="400"
+        y="725"
+        class="text-tag"
+        style="font-style: italic; fill: #475569"
+      >
+        T_VFD_Start_DB
+      </text>
+
+      <!-- Линия цепи до Таймера -->
+      <line x1="50" y1="780" x2="100" y2="780" class="rung" />
+      <use href="#no-contact" x="100" y="780" />
+      <line x1="140" y1="780" x2="220" y2="780" class="rung" />
+      <use href="#no-contact" x="220" y="780" />
+      <line x1="260" y1="780" x2="350" y2="780" class="rung" />
+
+      <!-- Прямоугольник блока TON -->
+      <rect
+        x="350"
+        y="740"
+        width="100"
+        height="80"
+        fill="#f8fafc"
+        stroke="#000000"
+        stroke-width="2"
+      />
+      <text
+        x="400"
+        y="762"
+        font-family="sans-serif"
+        font-size="12"
+        font-weight="bold"
+        text-anchor="middle"
+      >
+        TON
+      </text>
+      <text
+        x="360"
+        y="785"
+        font-family="sans-serif"
+        font-size="10"
+        font-weight="bold"
+      >
+        IN
+      </text>
+      <text
+        x="440"
+        y="785"
+        font-family="sans-serif"
+        font-size="10"
+        font-weight="bold"
+        text-anchor="end"
+      >
+        Q
+      </text>
+      <text
+        x="360"
+        y="808"
+        font-family="sans-serif"
+        font-size="10"
+        font-weight="bold"
+      >
+        PT
+      </text>
+      <text
+        x="440"
+        y="808"
+        font-family="sans-serif"
+        font-size="10"
+        font-weight="bold"
+        text-anchor="end"
+      >
+        ET
+      </text>
+
+      <!-- Подключение PT (Время уставки) -->
+      <line x1="310" y1="808" x2="350" y2="808" class="rung" />
+      <text
+        x="305"
+        y="812"
+        class="text-tag"
+        style="text-anchor: end; font-family: monospace"
+      >
+        T#1s
+      </text>
+
+      <!-- Выход из Таймера к Катушке -->
+      <line x1="450" y1="780" x2="650" y2="780" class="rung" />
+      <use href="#coil" x="650" y="780" />
+      <line x1="690" y1="780" x2="750" y2="780" class="rung" />
+
+      <!-- ================= NETWORK 5 ================= -->
+      <text x="60" y="890" class="text-title">
+        Network 5: Желтая сигнальная лампа "Двигатель запущен" (H2)
+      </text>
+
+      <text x="120" y="910" class="text-tag">DO_VFD_Run</text>
+      <text x="120" y="922" class="text-addr">(Q0.1)</text>
+
+      <text x="670" y="910" class="text-tag">DO_Run_Lamp</text>
+      <text x="670" y="922" class="text-addr">(Q0.2)</text>
+
+      <line x1="50" y1="930" x2="100" y2="930" class="rung" />
+      <use href="#no-contact" x="100" y="930" />
+      <line x1="140" y1="930" x2="650" y2="930" class="rung" />
+      <use href="#coil" x="650" y="930" />
+      <line x1="690" y1="930" x2="750" y2="930" class="rung" />
+
+      <!-- ================= NETWORK 6 ================= -->
+      <text x="60" y="1030" class="text-title">
+        Network 6: Зеленая сигнальная лампа "Система включена, насос ожидает"
+        (H1)
+      </text>
+
+      <text x="120" y="1055" class="text-tag">System_On</text>
+      <text x="120" y="1070" class="text-addr">(M0.0)</text>
+
+      <text x="280" y="1055" class="text-tag">DO_VFD_Run</text>
+      <text x="280" y="1070" class="text-addr">(Q0.1)</text>
+
+      <text x="670" y="1055" class="text-tag">DO_Ready_Lamp</text>
+      <text x="670" y="1070" class="text-addr">(Q0.3)</text>
+
+      <line x1="50" y1="1080" x2="100" y2="1080" class="rung" />
+      <use href="#no-contact" x="100" y="1080" />
+      <line x1="140" y1="1080" x2="260" y2="1080" class="rung" />
+      <use href="#nc-contact" x="260" y="1080" />
+      <line x1="300" y1="1080" x2="650" y2="1080" class="rung" />
+      <use href="#coil" x="650" y="1080" />
+      <line x1="690" y1="1080" x2="750" y2="1080" class="rung" />
+
+      <!-- ================= ШТАМП ГОСТ (TITLE BLOCK) ================= -->
+      <g transform="translate(0, 1180)">
+        <!-- Рамка штампа -->
+        <rect x="50" y="0" width="700" height="120" class="border-box" />
+
+        <!-- Разделительные линии -->
+        <line
+          x1="50"
+          y1="40"
+          x2="750"
+          y2="40"
+          stroke="#000000"
+          stroke-width="1.5"
+        />
+        <line
+          x1="50"
+          y1="80"
+          x2="750"
+          y2="80"
+          stroke="#000000"
+          stroke-width="1.5"
+        />
+
+        <line
+          x1="200"
+          y1="0"
+          x2="200"
+          y2="120"
+          stroke="#000000"
+          stroke-width="1.5"
+        />
+        <line
+          x1="480"
+          y1="0"
+          x2="480"
+          y2="120"
+          stroke="#000000"
+          stroke-width="1.5"
+        />
+        <line
+          x1="620"
+          y1="0"
+          x2="620"
+          y2="120"
+          stroke="#000000"
+          stroke-width="1.5"
+        />
+
+        <!-- Текстовое заполнение штампа -->
+        <!-- Столбец 1 (Должности) -->
+        <text x="60" y="25" font-size="11" fill="#000" font-weight="bold">
+          Разработал:
+        </text>
+        <text x="60" y="65" font-size="11" fill="#000" font-weight="bold">
+          Проверил:
+        </text>
+        <text x="60" y="105" font-size="11" fill="#000" font-weight="bold">
+          Утвердил:
+        </text>
+
+        <!-- Столбец 2 (Исполнители) -->
+        <text x="210" y="25" font-size="11" fill="#000">Медяник Д.В.</text>
+        <text x="210" y="65" font-size="11" fill="#000">Инженер АСУТП</text>
+        <text x="210" y="105" font-size="11" fill="#000">
+          Чертеж S7-1200 (6DI/4DO)
+        </text>
+
+        <!-- Столбец 3 (Организация) -->
+        <text
+          x="340"
+          y="55"
+          font-size="14"
+          fill="#000"
+          font-weight="bold"
+          text-anchor="middle"
+        >
+          ФОП МЕДЯНИК Д.В.
+        </text>
+        <text x="340" y="75" font-size="10" fill="#475569" text-anchor="middle">
+          Система управления насосом откачки
+        </text>
+
+        <!-- Столбец 4 (Листы) -->
+        <text x="550" y="25" font-size="11" fill="#000" font-weight="bold">
+          Стадия:
+        </text>
+        <text x="550" y="65" font-size="11" fill="#000" font-weight="bold">
+          Лист:
+        </text>
+        <text x="550" y="105" font-size="11" fill="#000" font-weight="bold">
+          Листов:
+        </text>
+
+        <!-- Столбец 5 (Значения листов) -->
+        <text x="660" y="25" font-size="11" fill="#000">РП (Проект)</text>
+        <text x="660" y="65" font-size="11" fill="#000">1</text>
+        <text x="660" y="105" font-size="11" fill="#000">1</text>
+      </g>
+    </svg>
+  </body>
+</html>
